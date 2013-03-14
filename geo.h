@@ -44,22 +44,22 @@
 typedef struct {
     double lat;
     double lon;
-	double lat_rad;
-	double lon_rad;
-	double lat_sin;
-	double lat_cos;
-	double lon_sin;
-	double lon_cos;
+    double lat_rad;
+    double lon_rad;
+    double lat_sin;
+    double lat_cos;
+    double lon_sin;
+    double lon_cos;
 } geo_t;
 
 typedef struct {
     double lat;
     double lon;
     double lat_rad;
-	double lon_rad;
+    double lon_rad;
     double dist;
-	double dist_sin;
-	double dist_cos;
+    double dist_sin;
+    double dist_cos;
     double angle;
     double angle_rad;
     geo_t *pivot;

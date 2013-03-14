@@ -30,7 +30,7 @@
 #include "lualib.h"
 
 static const double GEO_RAD = M_PI/180;
-static const double	GEO_DEG = 180/M_PI;
+static const double GEO_DEG = 180/M_PI;
 static const double GEO_PI2 = M_PI*2;
 
 #define GEO_DEG2RAD(d)  (d*GEO_RAD)
