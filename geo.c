@@ -307,31 +307,23 @@ static int geo_encode_lua( lua_State *L )
     return luaL_error( L, "invalid value range" );
 }
 
+
 static int geo_decode_lua( lua_State *L )
 {
-    int rc = 0;
     size_t len = 0;
     const char *hash = luaL_checklstring( L, 1, &len );
     double lat = 0;
     double lon = 0;
     
-    // deecode
-    if( geo_hash_decode( hash, len, &lat, &lon ) == -1 ){
-        return luaL_argerror( L, 1, "invalid hash string" );
-    }
-    else {
-        rc = 1;
-        lua_settop( L, 0 );
-        lua_createtable( L, 0, 2 );
-        lua_pushstring( L, "lat" );
+    // decode
+    if( geo_hash_decode( hash, len, &lat, &lon ) == 0 ){
         lua_pushnumber( L, lat );
-        lua_rawset( L, -3 );
-        lua_pushstring( L, "lon" );
         lua_pushnumber( L, lon );
-        lua_rawset( L, -3 );
+        return 2;
     }
     
-    return rc;
+    // got error
+    return luaL_argerror( L, 1, "invalid hash string" );
 }
 
 
