@@ -1,12 +1,12 @@
-package = "geo-native"
-version = "1.0-0"
+package = "geo"
+version = "scm-1"
 source = {
-    url = "https://github.com/mah0x211/lua-geo-native.git"
+    url = "https://github.com/mah0x211/lua-geo.git"
 }
 description = {
     summary = "geo location util",
     detailed = [[]],
-    homepage = "https://github.com/mah0x211/lua-geo-native", 
+    homepage = "https://github.com/mah0x211/lua-geo", 
     license = "MIT/X11",
     maintainer = "Masatoshi Teruya"
 }
@@ -16,9 +16,7 @@ dependencies = {
 build = {
     type = "builtin",
     modules = {
-        geo = {
-            sources = { "geo.c" }
-        }
+        geo = "geo.c"
     }
 }
 
