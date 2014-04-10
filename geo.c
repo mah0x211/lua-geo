@@ -143,7 +143,7 @@ static double geo_get_distance( geo_t *from, geo_t *dest )
     return sqrt( pow( ( from->lat_rad - dest->lat_rad ) * GEO_MERIDIAN(W), 2 ) +
                  pow( ( from->lon_rad - dest->lon_rad ) * GEO_PRIME_VERT(W) * 
                       cos( lat_ave ), 2 ) );
-};
+}
 
 static void geo_dest_update( geodest_t *dest )
 {
@@ -337,11 +337,6 @@ static int geo_decode_lua( lua_State *L )
     return rc;
 }
 
-#define lstate_fn2tbl(L,k,v) do{ \
-    lua_pushstring(L,k); \
-    lua_pushcfunction(L,v); \
-    lua_rawset(L,-3); \
-}while(0)
 
 LUALIB_API int luaopen_geo( lua_State *L )
 {
