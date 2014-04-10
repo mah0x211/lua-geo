@@ -297,17 +297,14 @@ static int geo_encode_lua( lua_State *L )
     uint8_t precision = (uint8_t)luaL_checknumber( L, 3 );
     char hash[GEO_MAX_HASH_LEN+1] = {0};
     
-    lua_settop( L, 0 );
     // encode
-    if( !geo_hash_encode( hash, lat, lon, precision ) ){
-        return luaL_error( L, "invalid value range" );
-    }
-    else {
-        rc = 1;
+    if( geo_hash_encode( hash, lat, lon, precision ) ){
         lua_pushstring( L, hash );
+        return 1;
     }
     
-    return rc;
+    // got error
+    return luaL_error( L, "invalid value range" );
 }
 
 static int geo_decode_lua( lua_State *L )
