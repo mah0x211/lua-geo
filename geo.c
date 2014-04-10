@@ -289,7 +289,7 @@ static int geo_hash_decode( const char *hash, size_t len, double *lat, double *l
 
 
 // MARK: lua binding
-static int geo_encode_lua( lua_State *L )
+static int encode_lua( lua_State *L )
 {
     int rc = 0;
     double lat = luaL_checknumber( L, 1 );
@@ -308,7 +308,7 @@ static int geo_encode_lua( lua_State *L )
 }
 
 
-static int geo_decode_lua( lua_State *L )
+static int decode_lua( lua_State *L )
 {
     size_t len = 0;
     const char *hash = luaL_checklstring( L, 1, &len );
@@ -330,8 +330,8 @@ static int geo_decode_lua( lua_State *L )
 LUALIB_API int luaopen_geo( lua_State *L )
 {
     static struct luaL_Reg method[] = {
-        { "encode", geo_encode_lua },
-        { "decode", geo_decode_lua },
+        { "encode", encode_lua },
+        { "decode", decode_lua },
         { NULL, NULL }
     };
     int i = 0;
