@@ -2,6 +2,20 @@
 
 geo location util.
 
+## Installation
+
+```sh
+luarocks install --from=http://mah0x211.github.io/rocks/ geo
+```
+
+or 
+
+```sh
+git clone https://github.com/mah0x211/lua-geo.git
+cd lua-geo
+luarocks make
+```
+
 
 ### encode( lat, lon, precision )
 
