@@ -13,7 +13,7 @@ or
 ```sh
 git clone https://github.com/mah0x211/lua-geo.git
 cd lua-geo
-luarocks make
+luarocks make rockspecs/geo-<version>.rockspec
 ```
 
 
