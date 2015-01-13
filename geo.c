@@ -252,6 +252,7 @@ static char *geo_hash_encode( char *hash, double lat, double lon, uint8_t precis
     return hash;
 }
 
+
 static int geo_hash_decode( const char *hash, size_t len, double *lat, double *lon )
 {
     if( GEO_IS_PRECISION_RANGE( len ) )
@@ -323,7 +324,10 @@ static int encode_lua( lua_State *L )
     }
     
     // got error
-    return luaL_error( L, "invalid value range" );
+    lua_pushnil( L );
+    lua_pushstring( L, strerror( errno ) );
+    
+    return 2;
 }
 
 
@@ -345,6 +349,7 @@ static int decode_lua( lua_State *L )
     // got error
     lua_pushnil( L );
     lua_pushstring( L, strerror( errno ) );
+    
     return 2;
 }
 
