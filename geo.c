@@ -39,6 +39,21 @@
 #include "lualib.h"
 #include "lua.h"
 
+// helper macros for lua_State
+#define lstate_fn2tbl(L,k,v) do{ \
+    lua_pushstring(L,k); \
+    lua_pushcfunction(L,v); \
+    lua_rawset(L,-3); \
+}while(0)
+
+#define lstate_num2tbl(L,k,v) do{ \
+    lua_pushstring(L,k); \
+    lua_pushnumber(L,v); \
+    lua_rawset(L,-3); \
+}while(0)
+
+
+
 #define GEO_MAX_HASH_LEN    16
 #define GEO_MAX_PRECISION_RANGE     16
 #define GEO_IS_PRECISION_RANGE(p)   ( p > 0 && p < 17 )
@@ -245,12 +260,12 @@ static int geo_hash_decode( const char *hash, size_t len, double *lat, double *l
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
             0, 0, 0, 0, 
-    //      0  1  2  3  4  5  6  7  8  9 
+        //  0  1  2  3  4  5  6  7  8  9 
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
             0, 0, 0, 0, 0, 0, 0, 0, 
-    //      B   C   D   E   F   G   H      J   K      M   N      P   Q   R   S
+        //  B   C   D   E   F   G   H      J   K      M   N      P   Q   R   S
             11, 12, 13, 14, 15, 16, 17, 0, 18, 19, 0, 20, 21, 0, 22, 23, 24, 25,
-    //      T   U   V   W   X   Y   Z 
+        //  T   U   V   W   X   Y   Z 
             26, 27, 28, 29, 30, 31, 32,
             0
         };
@@ -265,13 +280,15 @@ static int geo_hash_decode( const char *hash, size_t len, double *lat, double *l
         {
             // to uppercase
             c = ( code[i] > '`' && code[i] < '{' ) ? code[i] - 32 : code[i];
-            if( !geohash32code[c] ){
+            c = geohash32code[c];
+            // invalid charcode
+            if( !c ){
                 errno = EINVAL;
                 return -1;
             }
-            
+            // decode
             for( j = 0; j < 5; j++ ){
-                mask = ( geohash32code[c] - 1 ) & GEO_BITMASK[j];
+                mask = ( c - 1 ) & GEO_BITMASK[j];
                 latlon[is_lon][!mask] = ( latlon[is_lon][0] + latlon[is_lon][1] ) / 2;
                 is_lon = !is_lon;
             }
@@ -282,8 +299,10 @@ static int geo_hash_decode( const char *hash, size_t len, double *lat, double *l
     
         return 0;
     }
+    else {
+        errno = EOVERFLOW;
+    }
     
-    errno = EINVAL;
     return -1;
 }
 
@@ -317,13 +336,16 @@ static int decode_lua( lua_State *L )
     
     // decode
     if( geo_hash_decode( hash, len, &lat, &lon ) == 0 ){
-        lua_pushnumber( L, lat );
-        lua_pushnumber( L, lon );
-        return 2;
+        lua_createtable( L, 0, 2 );
+        lstate_num2tbl( L, "lat", lat );
+        lstate_num2tbl( L, "lon", lon );
+        return 1;
     }
     
     // got error
-    return luaL_argerror( L, 1, "invalid hash string" );
+    lua_pushnil( L );
+    lua_pushstring( L, strerror( errno ) );
+    return 2;
 }
 
 
@@ -334,14 +356,12 @@ LUALIB_API int luaopen_geo( lua_State *L )
         { "decode", decode_lua },
         { NULL, NULL }
     };
-    int i = 0;
+    struct luaL_Reg *ptr = method;
     
     lua_newtable( L );
-    while( method[i].name ){
-        lua_pushstring( L, method[i].name );
-        lua_pushcfunction( L, method[i].func );
-        lua_rawset( L,-3 );
-        i++;
+    while( ptr->name ){
+        lstate_fn2tbl( L, ptr->name, ptr->func );
+        ptr++;
     }
     
     return 1;
