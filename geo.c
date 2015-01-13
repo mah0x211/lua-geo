@@ -57,8 +57,8 @@
 #define GEO_MAX_HASH_LEN    16
 #define GEO_MAX_PRECISION_RANGE     16
 #define GEO_IS_PRECISION_RANGE(p)   ( p > 0 && p < 17 )
-#define GEO_IS_LAT_RANGE(l)         ( l > -90 && l < 90 )
-#define GEO_IS_LON_RANGE(l)         ( l > -180 && l < 180 )
+#define GEO_IS_LAT_RANGE(l)         ( l >= -90 && l <= 90 )
+#define GEO_IS_LON_RANGE(l)         ( l >= -180 && l <= 180 )
 #define GEO_IS_LATLON_RANGE(la,lo) \
     ( GEO_IS_LAT_RANGE(la) && GEO_IS_LON_RANGE( la ) )
 
