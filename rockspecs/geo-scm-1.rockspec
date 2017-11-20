@@ -20,6 +20,10 @@ build = {
             incdirs = { "deps/lauxhlib" },
             sources = { "src/geohash.c" }
         },
+        ["geo.quadkeys"] = {
+            incdirs = { "deps/lauxhlib" },
+            sources = { "src/quadkeys.c" }
+        },
     }
 }
 
