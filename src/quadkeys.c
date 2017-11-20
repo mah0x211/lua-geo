@@ -251,19 +251,18 @@ static int decode_lua( lua_State *L )
         // Converts a pixel from pixel XY coordinates at a specified level of detail
         // into latitude/longitude WGS-84 coordinates (in degrees).
         pixel2latlon( px, py, (int)len, &lat, &lon );
-
-        lua_createtable( L, 0, 2 );
-        lauxh_pushnum2tbl( L, "lat", lat );
-        lauxh_pushnum2tbl( L, "lon", lon );
-        return 1;
+        lua_pushnumber( L, lat );
+        lua_pushnumber( L, lon );
+        return 2;
     }
 
     // got error
     lua_pushnil( L );
+    lua_pushnil( L );
     // invalid quadkey digit sequence
     lua_pushstring( L, strerror( EILSEQ ) );
 
-    return 2;
+    return 3;
 }
 
 
