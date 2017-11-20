@@ -183,17 +183,17 @@ static int decode_lua( lua_State *L )
 
     // decode
     if( geo_hash_decode( hash, len, &lat, &lon ) == 0 ){
-        lua_createtable( L, 0, 2 );
-        lauxh_pushnum2tbl( L, "lat", lat );
-        lauxh_pushnum2tbl( L, "lon", lon );
-        return 1;
+        lua_pushnumber( L, lat );
+        lua_pushnumber( L, lon );
+        return 2;
     }
 
     // got error
     lua_pushnil( L );
+    lua_pushnil( L );
     lua_pushstring( L, strerror( errno ) );
 
-    return 2;
+    return 3;
 }
 
 
