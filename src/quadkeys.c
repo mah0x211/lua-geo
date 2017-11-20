@@ -293,12 +293,36 @@ static int decode2tile_lua( lua_State *L )
 }
 
 
+static int tile2latlon_lua( lua_State *L )
+{
+    int x = lauxh_checkinteger( L, 1 );
+    int y = lauxh_checkinteger( L, 2 );
+    int lv = lauxh_checkinteger( L, 3 );
+    int px = 0;
+    int py = 0;
+    double lat = 0;
+    double lon = 0;
+
+    lauxh_argcheck(
+        L, lv >= 1 && lv <= 23, 3, "1-23 expected, got an out of range value"
+    );
+
+    tile2pixel( x, y, &px, &py );
+    pixel2latlon( px, py, lv, &lat, &lon );
+    lua_pushnumber( L, lat );
+    lua_pushnumber( L, lon );
+
+    return 2;
+}
+
+
 LUALIB_API int luaopen_geo_quadkeys( lua_State *L )
 {
     lua_createtable( L, 0, 3 );
     lauxh_pushfn2tbl( L, "encode", encode_lua );
     lauxh_pushfn2tbl( L, "decode", decode_lua );
     lauxh_pushfn2tbl( L, "decode2tile", decode2tile_lua );
+    lauxh_pushfn2tbl( L, "tile2latlon", tile2latlon_lua );
 
     return 1;
 }
