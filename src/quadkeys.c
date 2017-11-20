@@ -266,11 +266,39 @@ static int decode_lua( lua_State *L )
 }
 
 
+static int decode2tile_lua( lua_State *L )
+{
+    size_t len = 0;
+    const char *quadkeys = lauxh_checklstring( L, 1, &len );
+    int x = 0;
+    int y = 0;
+
+    lauxh_argcheck(
+        L, len >= 1 && len <= 23, 1,
+        "length between 1 and 23 expected, got an out of range value"
+    );
+
+    if( quadkey2tile( quadkeys, (int)len, &x, &y ) == 0 ){
+        lua_pushnumber( L, x );
+        lua_pushnumber( L, y );
+        return 2;
+    }
+
+    // got error
+    lua_pushnil( L );
+    lua_pushnil( L );
+    // invalid quadkey digit sequence
+    lua_pushstring( L, strerror( EILSEQ ) );
+    return 3;
+}
+
+
 LUALIB_API int luaopen_geo_quadkeys( lua_State *L )
 {
-    lua_createtable( L, 0, 2 );
+    lua_createtable( L, 0, 3 );
     lauxh_pushfn2tbl( L, "encode", encode_lua );
     lauxh_pushfn2tbl( L, "decode", decode_lua );
+    lauxh_pushfn2tbl( L, "decode2tile", decode2tile_lua );
 
     return 1;
 }
