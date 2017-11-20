@@ -1,6 +1,6 @@
 local floor = math.floor;
 local ceil = math.ceil;
-local geo = require('geo');
+local geo = require('geo.geohash');
 local precision = 16;
 local incr = 0.1;
 local LAT_MAX = 90.0;
