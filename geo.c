@@ -1,11 +1,11 @@
 /*
  *  Copyright (C) 2013 Masatoshi Teruya
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a 
- *  copy of this software and associated documentation files (the "Software"), 
- *  to deal in the Software without restriction, including without limitation 
- *  the rights to use, copy, modify, merge, publish, distribute, sublicense, 
- *  and/or sell copies of the Software, and to permit persons to whom the 
+ *  Permission is hereby granted, free of charge, to any person obtaining a
+ *  copy of this software and associated documentation files (the "Software"),
+ *  to deal in the Software without restriction, including without limitation
+ *  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ *  and/or sell copies of the Software, and to permit persons to whom the
  *  Software is furnished to do so, subject to the following conditions:
  *
  *  The above copyright notice and this permission notice shall be included in
@@ -13,10 +13,10 @@
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL 
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
  *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *  DEALINGS IN THE SOFTWARE.
  *
  *
@@ -136,14 +136,14 @@ static int geo_init( geo_t *geo, double lat, double lon, int with_math )
         }
         return 0;
     }
-    
+
     errno = EINVAL;
     return -1;
 }
 
 static int geo_init_by_tokyo( geo_t *geo, double lat, double lon, int with_math )
 {
-    return geo_init( geo, 
+    return geo_init( geo,
                      lon - lat * 0.000046038 - lon * 0.000083043 + 0.010040,
                      lat - lat * 0.00010695 + lon * 0.000017464 + 0.0046017,
                      with_math );
@@ -154,24 +154,24 @@ static double geo_get_distance( geo_t *from, geo_t *dest )
 {
     double lat_ave = ( from->lat_rad + dest->lat_rad ) / 2;
     double W = sqrt( 1 - GEO_ECCENTRICITY * pow( sin( lat_ave ), 2 ) );
-    
+
     return sqrt( pow( ( from->lat_rad - dest->lat_rad ) * GEO_MERIDIAN(W), 2 ) +
-                 pow( ( from->lon_rad - dest->lon_rad ) * GEO_PRIME_VERT(W) * 
+                 pow( ( from->lon_rad - dest->lon_rad ) * GEO_PRIME_VERT(W) *
                       cos( lat_ave ), 2 ) );
 }
 
 static void geo_dest_update( geodest_t *dest )
 {
     double platc_ds = dest->pivot->lat_cos * dest->dist_sin;
-    
+
     dest->lat_rad = asin( dest->pivot->lat_sin * dest->dist_cos +
                           platc_ds * cos( dest->angle_rad ) );
-    dest->lon_rad = fmod( dest->pivot->lon_rad + 
+    dest->lon_rad = fmod( dest->pivot->lon_rad +
                           atan2( platc_ds * sin( dest->angle_rad ),
-                                 dest->dist_cos - 
-                                 pow( dest->pivot->lat_sin, 2 ) ) + 
+                                 dest->dist_cos -
+                                 pow( dest->pivot->lat_sin, 2 ) ) +
                           M_PI, GEO_PI2 ) - M_PI;
-    
+
     dest->lat = dest->lat_rad * GEO_DEG;
     dest->lon = dest->lon_rad * GEO_DEG;
 }
@@ -180,7 +180,7 @@ static void geo_set_angle( geodest_t *dest, double angle, int update )
 {
     dest->angle = angle;
     dest->angle_rad = angle * GEO_RAD;
-    
+
     if( update ){
         geo_dest_update( dest );
     }
@@ -191,7 +191,7 @@ static void geo_set_distance( geodest_t *dest, double dist, int update )
     dest->dist = dist / GEO_WGS84MAJOR;
     dest->dist_sin = sin( dest->dist );
     dest->dist_cos = cos( dest->dist );
-    
+
     if( update ){
         geo_dest_update( dest );
     }
@@ -223,7 +223,7 @@ static char *geo_hash_encode( char *hash, double lat, double lon, uint8_t precis
         int bit = 0;
         uint8_t idx = 0;
         int i = 0;
-        
+
         // precision: 1 - 16
         while( i < precision )
         {
@@ -236,7 +236,7 @@ static char *geo_hash_encode( char *hash, double lat, double lon, uint8_t precis
                 latlon[is_lon][1] = mid;
             }
             is_lon = !is_lon;
-            
+
             if( bit < 4 ){
                 bit++;
             }
@@ -248,7 +248,7 @@ static char *geo_hash_encode( char *hash, double lat, double lon, uint8_t precis
         }
         hash[i] = '\0';
     }
-    
+
     return hash;
 }
 
@@ -258,15 +258,15 @@ static int geo_hash_decode( const char *hash, size_t len, double *lat, double *l
     if( GEO_IS_PRECISION_RANGE( len ) )
     {
         static const unsigned char geohash32code[256] = {
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-            0, 0, 0, 0, 
-        //  0  1  2  3  4  5  6  7  8  9 
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0,
+        //  0  1  2  3  4  5  6  7  8  9
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-            0, 0, 0, 0, 0, 0, 0, 0, 
+            0, 0, 0, 0, 0, 0, 0, 0,
         //  B   C   D   E   F   G   H      J   K      M   N      P   Q   R   S
             11, 12, 13, 14, 15, 16, 17, 0, 18, 19, 0, 20, 21, 0, 22, 23, 24, 25,
-        //  T   U   V   W   X   Y   Z 
+        //  T   U   V   W   X   Y   Z
             26, 27, 28, 29, 30, 31, 32,
             0
         };
@@ -276,7 +276,7 @@ static int geo_hash_decode( const char *hash, size_t len, double *lat, double *l
         int is_lon = 1;
         int mask = 0;
         size_t i, j;
-        
+
         for( i = 0; i < len; i++ )
         {
             // to uppercase
@@ -294,16 +294,16 @@ static int geo_hash_decode( const char *hash, size_t len, double *lat, double *l
                 is_lon = !is_lon;
             }
         }
-        
+
         *lat = ( latlon[0][0] + latlon[0][1] ) / 2;
         *lon = ( latlon[1][0] + latlon[1][1] ) / 2;
-    
+
         return 0;
     }
     else {
         errno = EOVERFLOW;
     }
-    
+
     return -1;
 }
 
@@ -316,17 +316,17 @@ static int encode_lua( lua_State *L )
     double lon = luaL_checknumber( L, 2 );
     uint8_t precision = (uint8_t)luaL_checknumber( L, 3 );
     char hash[GEO_MAX_HASH_LEN+1] = {0};
-    
+
     // encode
     if( geo_hash_encode( hash, lat, lon, precision ) ){
         lua_pushstring( L, hash );
         return 1;
     }
-    
+
     // got error
     lua_pushnil( L );
     lua_pushstring( L, strerror( errno ) );
-    
+
     return 2;
 }
 
@@ -337,7 +337,7 @@ static int decode_lua( lua_State *L )
     const char *hash = luaL_checklstring( L, 1, &len );
     double lat = 0;
     double lon = 0;
-    
+
     // decode
     if( geo_hash_decode( hash, len, &lat, &lon ) == 0 ){
         lua_createtable( L, 0, 2 );
@@ -345,11 +345,11 @@ static int decode_lua( lua_State *L )
         lstate_num2tbl( L, "lon", lon );
         return 1;
     }
-    
+
     // got error
     lua_pushnil( L );
     lua_pushstring( L, strerror( errno ) );
-    
+
     return 2;
 }
 
@@ -362,13 +362,13 @@ LUALIB_API int luaopen_geo( lua_State *L )
         { NULL, NULL }
     };
     struct luaL_Reg *ptr = method;
-    
+
     lua_newtable( L );
     while( ptr->name ){
         lstate_fn2tbl( L, ptr->name, ptr->func );
         ptr++;
     }
-    
+
     return 1;
 }
 
