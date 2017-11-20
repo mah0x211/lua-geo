@@ -5,8 +5,7 @@ source = {
 }
 description = {
     summary = "geo location util",
-    detailed = [[]],
-    homepage = "https://github.com/mah0x211/lua-geo", 
+    homepage = "https://github.com/mah0x211/lua-geo",
     license = "MIT/X11",
     maintainer = "Masatoshi Teruya"
 }
@@ -16,7 +15,7 @@ dependencies = {
 build = {
     type = "builtin",
     modules = {
-        geo = "geo.c"
+        geo = "src/geo.c"
     }
 }
 
