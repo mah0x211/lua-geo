@@ -185,6 +185,30 @@ static int encode_lua( lua_State *L )
 }
 
 
+static int encode2tile_lua( lua_State *L )
+{
+    lua_Number lat = lauxh_checknumber( L, 1 );
+    lua_Number lon = lauxh_checknumber( L, 2 );
+    lua_Integer lv = lauxh_optinteger( L, 3, 23 );
+    int len = 0;
+    int px = 0;
+    int py = 0;
+    int tx = 0;
+    int ty = 0;
+
+    lauxh_argcheck(
+        L, lv >= 1 && lv <= 23, 3, "1-23 expected, got an out of range value"
+    );
+
+    latlon2pixel( lat,  lon, lv, &px, &py );
+    pixel2tile( px, py, &tx, &ty );
+    lua_pushnumber( L, tx );
+    lua_pushnumber( L, ty );
+
+    return 2;
+}
+
+
 // Converts a QuadKey into tile XY coordinates.
 // quadKey: QuadKey of the tile.
 // lv: Output parameter receiving the level of detail.
@@ -320,6 +344,7 @@ LUALIB_API int luaopen_geo_quadkeys( lua_State *L )
 {
     lua_createtable( L, 0, 3 );
     lauxh_pushfn2tbl( L, "encode", encode_lua );
+    lauxh_pushfn2tbl( L, "encode2tile", encode2tile_lua );
     lauxh_pushfn2tbl( L, "decode", decode_lua );
     lauxh_pushfn2tbl( L, "decode2tile", decode2tile_lua );
     lauxh_pushfn2tbl( L, "tile2latlon", tile2latlon_lua );
