@@ -15,7 +15,11 @@ dependencies = {
 build = {
     type = "builtin",
     modules = {
-        geo = "src/geo.c"
+        geo = "src/geo.c",
+        ["geo.geohash"] = {
+            incdirs = { "deps/lauxhlib" },
+            sources = { "src/geohash.c" }
+        },
     }
 }
 
