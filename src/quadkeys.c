@@ -340,6 +340,24 @@ static int tile2latlon_lua( lua_State *L )
 }
 
 
+static int tile2key_lua( lua_State *L )
+{
+    int tx = lauxh_checkinteger( L, 1 );
+    int ty = lauxh_checkinteger( L, 2 );
+    lua_Integer lv = lauxh_optinteger( L, 3, 23 );
+    char quadkey[23] = {0};
+    int len = 0;
+
+    lauxh_argcheck(
+        L, lv >= 1 && lv <= 23, 3, "1-23 expected, got an out of range value"
+    );
+
+    len = tile2quadkey( quadkey, tx, ty, lv );
+    lua_pushlstring( L, quadkey, len );
+
+    return 1;
+}
+
 LUALIB_API int luaopen_geo_quadkeys( lua_State *L )
 {
     lua_createtable( L, 0, 3 );
@@ -348,6 +366,7 @@ LUALIB_API int luaopen_geo_quadkeys( lua_State *L )
     lauxh_pushfn2tbl( L, "decode", decode_lua );
     lauxh_pushfn2tbl( L, "decode2tile", decode2tile_lua );
     lauxh_pushfn2tbl( L, "tile2latlon", tile2latlon_lua );
+    lauxh_pushfn2tbl( L, "tile2key", tile2key_lua );
 
     return 1;
 }
